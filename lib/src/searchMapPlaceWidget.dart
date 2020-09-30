@@ -15,6 +15,7 @@ class SearchMapPlaceWidget extends StatefulWidget {
     this.language = 'en',
     this.location,
     this.radius,
+    this.height,
     this.strictBounds = false,
     this.placeType,
     this.darkMode = false,
@@ -88,6 +89,8 @@ class SearchMapPlaceWidget extends StatefulWidget {
   /// The font size of the text inputted in the search bar and placeholder
   final double fontSize;
 
+  final double height;
+
   @override
   _SearchMapPlaceWidgetState createState() => _SearchMapPlaceWidgetState();
 }
@@ -115,7 +118,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
   void initState() {
     geocode = Geocoding(apiKey: widget.apiKey, language: widget.language);
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    _containerHeight = Tween<double>(begin: 55, end: 70).animate(
+    _containerHeight = Tween<double>(begin: 55, end: 364).animate(
       CurvedAnimation(
         curve: Interval(0.0, 0.5, curve: Curves.easeInOut),
         parent: _animationController,
@@ -163,7 +166,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
         animation: _animationController,
         builder: (context, _) {
           return Container(
-            height: _containerHeight.value,
+            height: widget.height ?? _containerHeight.value,
             decoration: _containerDecoration(),
             child: Column(
               children: <Widget>[
