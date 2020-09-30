@@ -166,7 +166,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
         animation: _animationController,
         builder: (context, _) {
           return Container(
-            height: widget.height ?? _containerHeight.value,
+            height: _containerHeight.value,
             decoration: _containerDecoration(),
             child: Column(
               children: <Widget>[
@@ -193,42 +193,46 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
   Widget _searchInput(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    return Center(
-      child: Row(
-        children: <Widget>[
-          if (widget.leadingIcon != null)
-            Icon(widget.leadingIcon, color: widget.iconColor, size: widget.iconSize),
-          widget.leadingIcon != null ? Container(width: 15) : Container(),
-          Expanded(
-            child: TextField(
-              decoration: _inputStyle(),
-              controller: _textEditingController,
-              onSubmitted: (_) => _selectPlace(),
-              onEditingComplete: _selectPlace,
-              autofocus: false,
-              focusNode: _fn,
-              style: TextStyle(
-                fontSize: widget.fontSize ?? screenWidth * 0.04,
-                color: widget.darkMode ? Colors.grey[100] : Colors.grey[850],
+    return Container(
+      height: widget.height,
+      child: Center(
+        child: Row(
+          children: <Widget>[
+            if (widget.leadingIcon != null)
+              Icon(widget.leadingIcon, color: widget.iconColor, size: widget.iconSize),
+            widget.leadingIcon != null ? Container(width: 15) : Container(),
+            Expanded(
+              child: TextField(
+                decoration: _inputStyle(),
+                controller: _textEditingController,
+                onSubmitted: (_) => _selectPlace(),
+                onEditingComplete: _selectPlace,
+                autofocus: false,
+                focusNode: _fn,
+                style: TextStyle(
+                  fontSize: widget.fontSize ?? screenWidth * 0.04,
+                  color: widget.darkMode ? Colors.grey[100] : Colors.grey[850],
+                ),
               ),
             ),
-          ),
-          Container(width: 15),
-          if (widget.hasClearButton)
-            GestureDetector(
-              onTap: () {
-                if (_crossFadeState == CrossFadeState.showSecond) _textEditingController.clear();
-              },
-              child: AnimatedCrossFade(
-                crossFadeState: _crossFadeState,
-                duration: Duration(milliseconds: 300),
-                firstChild: Icon(widget.icon, color: widget.iconColor, size: widget.iconSize),
-                secondChild: Icon(Icons.clear, color: widget.iconColor, size: widget.iconSize),
+            Container(width: 15),
+            if (widget.hasClearButton)
+              GestureDetector(
+                onTap: () {
+                  if (_crossFadeState == CrossFadeState.showSecond) _textEditingController.clear();
+                },
+                child: AnimatedCrossFade(
+                  crossFadeState: _crossFadeState,
+                  duration: Duration(milliseconds: 300),
+                  firstChild: Icon(widget.icon, color: widget.iconColor, size: widget.iconSize),
+                  secondChild: Icon(Icons.clear, color: widget.iconColor, size: widget.iconSize),
+                ),
               ),
-            ),
-          if (!widget.hasClearButton) Icon(widget.icon, color: widget.iconColor, size: widget.iconSize)
-        ],
-      ),
+            if (!widget.hasClearButton)
+              Icon(widget.icon, color: widget.iconColor, size: widget.iconSize)
+          ],
+        ),
+      )
     );
   }
 
