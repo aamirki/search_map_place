@@ -396,9 +396,14 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
   /// Will listen for input changes every 0.5 seconds, allowing us to make API requests only when the user stops typing.
   void customListener() {
     if (mounted) {
-      Future.delayed(Duration(milliseconds: 500), () {
-        setState(() => _tempInput = _textEditingController.text);
-        customListener();
+      Future.delayed(Duration.zero, () {
+        Timer.periodic(Duration(milliseconds: 500), (Timer t) {
+          if (mounted) {
+            setState(() => _tempInput = _textEditingController.text);
+          } else {
+            t.cancel();
+          }
+        });
       });
     }
   }
