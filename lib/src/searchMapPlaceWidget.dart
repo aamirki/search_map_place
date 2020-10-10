@@ -113,6 +113,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
   String _currentInput = "";
 
   FocusNode _fn = FocusNode();
+  Function _removeFunction;
 
   CrossFadeState _crossFadeState;
 
@@ -140,12 +141,13 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
     customListener();
 
     if (widget.hasClearButton) {
-      _fn.addListener(() async {
+      _removeFunction = () async {
         if (_fn.hasFocus)
           if (mounted) setState(() => _crossFadeState = CrossFadeState.showSecond);
         else
           if (mounted) setState(() => _crossFadeState = CrossFadeState.showFirst);
-      });
+      };
+      _fn.addListener(_removeFunction);
       _crossFadeState = CrossFadeState.showFirst;
     }
 
@@ -394,8 +396,10 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
   /// Will listen for input changes every 0.5 seconds, allowing us to make API requests only when the user stops typing.
   void customListener() {
     Future.delayed(Duration(milliseconds: 500), () {
-      setState(() => _tempInput = _textEditingController.text);
-      customListener();
+      if (mounted) {
+        setState(() => _tempInput = _textEditingController.text);
+        customListener();
+      }
     });
   }
 
@@ -403,6 +407,9 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
   void dispose() {
     _animationController.dispose();
     _textEditingController.dispose();
+    if (widget.hasClearButton) {
+      _fn.removeListener(_removeFunction);
+    }
     _fn.dispose();
     super.dispose();
   }
