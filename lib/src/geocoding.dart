@@ -7,6 +7,7 @@ class Geocoding {
 
   Future<dynamic> getGeolocation(String adress) async {
     String trimmedAdress = adress.replaceAllMapped(' ', (m) => '+');
+    trimmedAdress.replaceAll('&', '%26');
     final url =
         "https://maps.googleapis.com/maps/api/geocode/json?address=$trimmedAdress&key=$apiKey&language=$language";
     final response = await http.get(url);
